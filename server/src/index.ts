@@ -18,7 +18,7 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
-app.use(cors());
+app.use(cors({ origin: process.env.NODE_ENV === "production" ? process.env.CORS_ORIGIN : "*" }));
 app.use(express.json());
 
 // ── Health ──────────────────────────────────────────────────────

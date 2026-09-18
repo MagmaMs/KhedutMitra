@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card } from '../Card';
 import { useTranslation } from '../../hooks/useTranslation';
 import { formatRupees, formatShortDate } from '../../utils/format';

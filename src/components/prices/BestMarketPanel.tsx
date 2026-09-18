@@ -1,4 +1,3 @@
-import React from 'react';
 import { CheckCircle2Icon, MapPinIcon } from 'lucide-react';
 import { TrendIndicator } from '../TrendIndicator';
 import { useTranslation } from '../../hooks/useTranslation';

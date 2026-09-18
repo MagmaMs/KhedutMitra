@@ -1,54 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
-import { useToast } from '../contexts/ToastContext';
+import { useToast } from '../hooks/useToast';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import { EmptyState } from '../components/EmptyState';
-import { MessageSquareIcon, UserIcon, MapPinIcon, BadgeCheckIcon, ArrowLeftIcon, CheckCircle2Icon } from 'lucide-react';
-
-let seedPosts: any[] = [];
-let seedAnswers: any[] = [];
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const data = require('../data/community');
-  seedPosts = data.seedPosts || [];
-  seedAnswers = data.seedAnswers || [];
-} catch (e) {
-  seedPosts = [
-    {
-      id: '1',
-      title: 'Best time to sow wheat in Gujarat?',
-      body: 'I am planning to sow Lok-1 variety this year. When is the ideal time considering current weather?',
-      authorName: 'Ramesh Patel',
-      authorLocation: 'Mehsana',
-      topic: 'Crop Rotation',
-      answerCount: 3,
-      isExpert: false,
-      timeAgo: '2 hours ago'
-    }
-  ];
-  seedAnswers = [
-    {
-      id: '1',
-      postId: '1',
-      body: 'Wait until the temperature drops below 22°C. Usually first week of November is ideal for Lok-1.',
-      authorName: 'Dr. Joshi',
-      timeAgo: '1 hour ago',
-      isExpert: true,
-      isAccepted: true
-    },
-    {
-      id: '2',
-      postId: '1',
-      body: 'I sowed last year in late October and got good yield, but weather was cooler then.',
-      authorName: 'Suresh Bhai',
-      timeAgo: '30 mins ago',
-      isExpert: false,
-      isAccepted: false
-    }
-  ];
-}
+import { useCommunityPost } from '../hooks/useCommunity';
+import { timeAgo } from '../utils/format';
+import {
+  MessageSquareIcon,
+  BadgeCheckIcon,
+  CheckCircle2Icon,
+  ArrowLeftIcon
+} from 'lucide-react';
 
 export function CommunityPost() {
   const { id } = useParams();
@@ -56,10 +20,13 @@ export function CommunityPost() {
   const { t } = useTranslation();
   const { showToast } = useToast();
 
-  const [answers, setAnswers] = useState(seedAnswers.filter(a => a.postId === id));
+  const { post, answers, loading, addAnswer } = useCommunityPost(id);
   const [newAnswer, setNewAnswer] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const post = seedPosts.find(p => p.id === id);
+  if (loading) {
+    return <div className="p-4 text-center">{t('common.loading')}</div>;
+  }
 
   if (!post) {
     return (
@@ -69,31 +36,31 @@ export function CommunityPost() {
           {t('common.back')}
         </Button>
         <EmptyState 
-          title="Post not found" 
+          title="Post not found"
           body="This discussion may have been removed." 
         />
       </div>
     );
   }
 
-  const handleSubmitAnswer = (e: React.FormEvent) => {
+  const handleSubmitAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAnswer.trim()) {
       showToast(t('community.error.emptyAnswer'));
       return;
     }
-    const answer = {
-      id: String(Date.now()),
-      postId: id || '',
-      body: newAnswer,
-      authorName: 'Current User',
-      timeAgo: 'Just now',
-      isExpert: false,
-      isAccepted: false
-    };
-    setAnswers([...answers, answer]);
-    setNewAnswer('');
-    showToast(t('community.answerPosted'));
+    
+    setIsSubmitting(true);
+    try {
+      await addAnswer(newAnswer);
+      setNewAnswer('');
+      showToast(t('community.answerPosted'));
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to post answer", "danger");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -107,34 +74,39 @@ export function CommunityPost() {
       </button>
 
       <Card className="p-5 bg-surface border-line space-y-4">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="text-xl sm:text-2xl font-bold text-ink">{post.title}</h1>
-          <span className="shrink-0 inline-flex items-center rounded-full bg-brand-soft px-2.5 py-0.5 text-xs font-semibold text-brand border border-brand/20">
-            {post.topic}
-          </span>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
+          <div className="space-y-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-ink">{post.title}</h1>
+            <div className="inline-block bg-surface-alt px-2.5 py-1 rounded text-xs font-bold text-ink-muted mt-1 uppercase tracking-wider">
+              {post.category}
+            </div>
+          </div>
         </div>
         
-        <p className="text-base text-ink whitespace-pre-wrap">
-          {post.body}
-        </p>
+        <p className="text-ink text-base whitespace-pre-wrap">{post.body}</p>
 
-        <div className="flex items-center gap-4 text-sm text-ink-muted pt-4 border-t border-line/50">
-          <div className="flex items-center gap-1.5">
-            <UserIcon className="h-4 w-4" />
-            <span className="font-semibold text-ink">{post.authorName}</span>
-            {post.isExpert && (
-              <span className="inline-flex items-center gap-1 text-brand bg-brand-soft px-1.5 py-0.5 rounded text-xs font-bold">
-                <BadgeCheckIcon className="h-3.5 w-3.5" />
-                {t('community.verifiedExpert')}
-              </span>
-            )}
+        <div className="pt-4 mt-2 border-t border-line flex flex-wrap gap-4 justify-between items-center text-sm">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-brand-soft text-brand-deep flex items-center justify-center font-bold">
+              {post.authorName.charAt(0)}
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-ink">{post.authorName}</span>
+                {post.isExpert && (
+                  <span className="inline-flex items-center gap-1 text-brand bg-brand-soft px-1.5 py-0.5 rounded text-xs font-bold">
+                    <BadgeCheckIcon className="h-3.5 w-3.5" />
+                    {t('community.verifiedExpert')}
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-ink-muted flex items-center gap-2 mt-0.5">
+                <span>{post.authorLocation}</span>
+                <span>•</span>
+                <span>{timeAgo(post.createdAt)}</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <MapPinIcon className="h-4 w-4" />
-            <span>{post.authorLocation}</span>
-          </div>
-          <span>•</span>
-          <span>{post.timeAgo}</span>
         </div>
       </Card>
 
@@ -146,23 +118,27 @@ export function CommunityPost() {
 
         {answers.map(answer => (
           <Card key={answer.id} className="p-4 bg-surface border-line space-y-3">
-            <p className="text-sm text-ink whitespace-pre-wrap">
-              {answer.body}
-            </p>
-            <div className="flex items-center justify-between pt-2">
-              <div className="flex items-center gap-3 text-xs text-ink-muted">
-                <div className="flex items-center gap-1.5">
-                  <UserIcon className="h-3.5 w-3.5" />
-                  <span className="font-semibold text-ink">{answer.authorName}</span>
-                  {answer.isExpert && (
-                    <span className="inline-flex items-center gap-1 text-brand bg-brand-soft px-1.5 py-0.5 rounded text-xs font-bold">
-                      <BadgeCheckIcon className="h-3.5 w-3.5" />
-                      {t('community.verifiedExpert')}
-                    </span>
-                  )}
+            <div className="flex justify-between items-start gap-4">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full bg-surface-alt text-ink flex items-center justify-center font-bold text-sm">
+                  {answer.authorName.charAt(0)}
                 </div>
-                <span>•</span>
-                <span>{answer.timeAgo}</span>
+                <div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-ink text-sm">{answer.authorName}</span>
+                    {answer.isExpert && (
+                      <span className="inline-flex items-center gap-1 text-brand bg-brand-soft px-1.5 py-0.5 rounded text-xs font-bold">
+                        <BadgeCheckIcon className="h-3.5 w-3.5" />
+                        {t('community.verifiedExpert')}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-ink-muted flex items-center gap-2 mt-0.5">
+                    <span>{answer.authorLocation}</span>
+                    <span>•</span>
+                    <span>{timeAgo(answer.createdAt)}</span>
+                  </div>
+                </div>
               </div>
               {answer.isAccepted && (
                 <div className="flex items-center gap-1 text-brand text-xs font-bold bg-brand-soft px-2 py-1 rounded-full">
@@ -171,6 +147,7 @@ export function CommunityPost() {
                 </div>
               )}
             </div>
+            <p className="text-sm text-ink pl-10 whitespace-pre-wrap">{answer.body}</p>
           </Card>
         ))}
 
@@ -194,8 +171,8 @@ export function CommunityPost() {
             required
           />
           <div className="flex justify-end">
-            <Button type="submit">
-              {t('community.submitAnswer')}
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? t('common.loading') : t('community.submitAnswer')}
             </Button>
           </div>
         </form>

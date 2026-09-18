@@ -30,7 +30,7 @@ export class PriceService {
             minPrice: parseFloat(record.min_price),
             maxPrice: parseFloat(record.max_price),
             modalPrice: parseFloat(record.modal_price),
-            previousModalPrice: parseFloat(record.modal_price), // Not historically provided in current snapshot
+            previousModalPrice: null, // No historical data in current snapshot
             arrivalDate: record.arrival_date,
             source: 'AGMARKNET',
             isFallback: false

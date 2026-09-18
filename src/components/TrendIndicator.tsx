@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowDownRightIcon, ArrowUpRightIcon, MinusIcon } from 'lucide-react';
 import { useTranslation } from '../hooks/useTranslation';
 import { formatRupees } from '../utils/format';
@@ -6,7 +5,7 @@ import { cn } from '../utils/cn';
 
 interface TrendIndicatorProps {
   current: number;
-  previous: number;
+  previous: number | null;
   className?: string;
   showSuffix?: boolean;
 }
@@ -14,6 +13,7 @@ interface TrendIndicatorProps {
 /** Arrow + word + amount, so the direction never depends on colour alone. */
 export function TrendIndicator({ current, previous, className, showSuffix = true }: TrendIndicatorProps) {
   const { t } = useTranslation();
+  if (previous === null) return <span className={cn('text-sm text-ink-muted', className)}>{t('market.flat')}</span>;
   const delta = current - previous;
   const isFlat = Math.abs(delta) < 5;
 

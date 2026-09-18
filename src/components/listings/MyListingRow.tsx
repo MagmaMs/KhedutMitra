@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { CalendarIcon, CheckIcon, PencilIcon, UndoIcon, XIcon } from 'lucide-react';
 import { Button } from '../Button';
 import { Input } from '../Input';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { DropletsIcon, MapPinIcon, ThermometerIcon, WindIcon } from 'lucide-react';
 import { Card } from '../Card';
 import { Button } from '../Button';

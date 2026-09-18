@@ -102,7 +102,12 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
         state: input.state
       }).select().single();
 
-      if (!error && data) {
+      if (error) {
+        console.error('Failed to create listing:', error);
+        throw new Error('Failed to create listing');
+      }
+
+      if (data) {
         const listing: Listing = {
           id: data.id,
           cropId: data.crop_id,
@@ -123,7 +128,7 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
       }
     }
     
-    // Fallback
+    // Fallback for demo mode (when Supabase is not configured)
     const listing: Listing = {
       id: `lst-${Date.now()}`,
       cropId: input.cropId,
@@ -145,14 +150,22 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
 
   const setStatus = useCallback(async (id: string, next: ListingStatus) => {
     if (isSupabaseConfigured && supabase) {
-      await supabase.from('crop_listings').update({ status: next }).eq('id', id);
+      const { error } = await supabase.from('crop_listings').update({ status: next }).eq('id', id);
+      if (error) {
+        console.error('Failed to update listing status:', error);
+        throw new Error('Failed to update listing status');
+      }
     }
     setListings((current) => current.map((item) => item.id === id ? { ...item, status: next } : item));
   }, []);
 
   const setPrice = useCallback(async (id: string, pricePerKg: number) => {
     if (isSupabaseConfigured && supabase) {
-      await supabase.from('crop_listings').update({ price_per_kg: pricePerKg }).eq('id', id);
+      const { error } = await supabase.from('crop_listings').update({ price_per_kg: pricePerKg }).eq('id', id);
+      if (error) {
+        console.error('Failed to update listing price:', error);
+        throw new Error('Failed to update listing price');
+      }
     }
     setListings((current) => current.map((item) => item.id === id ? { ...item, pricePerKg } : item));
   }, []);

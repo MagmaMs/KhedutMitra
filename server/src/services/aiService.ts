@@ -37,6 +37,8 @@ export class AiService {
             cautions: result.cautions,
             sources: result.sources
           };
+        } else {
+          throw new Error('Gemini API returned empty response');
         }
       } catch (err) {
         console.error('Gemini API Error:', err);

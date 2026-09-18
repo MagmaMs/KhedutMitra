@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle2Icon, MapPinIcon, UserIcon } from 'lucide-react';

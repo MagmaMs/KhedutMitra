@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOutIcon, PhoneIcon, SproutIcon, StoreIcon, UserIcon } from 'lucide-react';
 import { Button } from '../components/Button';

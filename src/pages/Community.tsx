@@ -9,6 +9,8 @@ import { Select } from '../components/Select';
 import { EmptyState } from '../components/EmptyState';
 import { MessageSquareIcon, UserIcon, MapPinIcon, PlusIcon, BadgeCheckIcon, SearchIcon } from 'lucide-react';
 
+import type { CommunityPost } from '../types';
+import { timeAgo } from '../utils/format';
 import { useCommunity } from "../hooks/useCommunity";
 const CATEGORIES = ['All', 'Crop Rotation', 'Pest Control', 'Irrigation', 'Soil Health', 'Market', 'Weather', 'Organic'];
 
@@ -28,9 +30,9 @@ export function Community() {
   const [newBody, setNewBody] = useState('');
   const [newTopic, setNewTopic] = useState('Crop Rotation');
 
-  const filteredPosts = posts.filter((post: any) => {
+  const filteredPosts = posts.filter((post: CommunityPost) => {
     const matchesSearch = post.title.toLowerCase().includes(search.toLowerCase()) || post.body.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = category === 'All' || post.topic === category;
+    const matchesCategory = category === 'All' || post.category === category;
     return matchesSearch && matchesCategory;
   });
 
@@ -113,8 +115,8 @@ export function Community() {
               <Button type="button" variant="secondary" onClick={() => setShowForm(false)}>
                 {t('common.cancel')}
               </Button>
-              <Button type="submit">
-                {t('community.form.submit')}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? t('common.loading') : t('community.form.submit')}
               </Button>
             </div>
           </form>
@@ -149,7 +151,7 @@ export function Community() {
                     {post.title}
                   </h3>
                   <span className="shrink-0 inline-flex items-center rounded-full bg-brand-soft px-2.5 py-0.5 text-xs font-semibold text-brand border border-brand/20">
-                    {post.topic}
+                    {post.category}
                   </span>
                 </div>
                 
@@ -171,7 +173,7 @@ export function Community() {
                       <span>{post.authorLocation}</span>
                     </div>
                     <span>•</span>
-                    <span>{post.timeAgo}</span>
+                    <span>{timeAgo(post.createdAt)}</span>
                   </div>
                   
                   <div className="flex items-center gap-1.5 text-sm font-semibold text-ink-muted mt-2">

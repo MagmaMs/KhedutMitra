@@ -1,4 +1,3 @@
-import React from 'react';
 import { DropletIcon } from 'lucide-react';
 import { Card } from '../Card';
 import { Skeleton } from '../Skeleton';

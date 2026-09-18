@@ -1,5 +1,4 @@
 import '@testing-library/jest-dom';
-import { vi } from 'vitest';
 
 const localStorageMock = (function () {
   let store: Record<string, string> = {};

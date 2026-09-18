@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertTriangleIcon, CheckCircle2Icon, InfoIcon } from 'lucide-react';
 import { useTranslation } from '../../hooks/useTranslation';
 import { cn } from '../../utils/cn';

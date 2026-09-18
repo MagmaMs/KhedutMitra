@@ -1,13 +1,14 @@
-import React from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from '../utils/cn';
 
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  as?: 'div' | 'section' | 'article' | 'li';
+type CardTag = 'div' | 'section' | 'article' | 'li';
+
+interface CardProps extends HTMLAttributes<HTMLElement> {
+  as?: CardTag;
   padded?: boolean;
 }
 
-export function Card({ as = 'div', padded = true, className, children, ...props }: CardProps) {
-  const Tag = as;
+export function Card({ as: Tag = 'div', padded = true, className, children, ...props }: CardProps) {
   return (
     <Tag
       className={cn(
@@ -16,14 +17,13 @@ export function Card({ as = 'div', padded = true, className, children, ...props 
         className
       )}
       {...props}>
-      
       {children}
-    </Tag>);
-
+    </Tag>
+  );
 }
 
-export function CardTitle({ children, className }: {children: React.ReactNode;className?: string;}) {
+export function CardTitle({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <h2 className={cn('text-sm font-bold uppercase tracking-wide text-ink-muted', className)}>{children}</h2>);
-
+    <h2 className={cn('text-sm font-bold uppercase tracking-wide text-ink-muted', className)}>{children}</h2>
+  );
 }

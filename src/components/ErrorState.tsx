@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertTriangleIcon, RefreshCwIcon } from 'lucide-react';
 import { Button } from './Button';
 

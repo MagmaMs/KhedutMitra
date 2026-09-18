@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Card, Notice, Button } from '../components';
+import { useMemo } from 'react';
+import { Card, Button } from '../components';
 import { AdvisoryCard } from '../components/dashboard/AdvisoryCard';
 import { useLanguage } from '../hooks/useLanguage';
 import { useAuth } from '../hooks/useAuth';
@@ -18,7 +18,7 @@ export function Weather() {
     [user?.state, user?.district]
   );
   
-  const { coords, requestLocation, loading: locationLoading } = useGeolocation();
+  const { coords } = useGeolocation();
   const { status, weather, refetch } = useWeather(district, coords);
   
   const advisories = useMemo(() => weather ? buildAdvisories(weather) : [], [weather]);

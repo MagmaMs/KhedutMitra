@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, Button, Input, Notice, Skeleton } from '../components';
 import { useLanguage } from '../hooks/useLanguage';
 import { Leaf, Droplets, Bug, Sprout, HeartPulse, Calendar } from 'lucide-react';

@@ -52,7 +52,7 @@ export interface MarketPrice {
   minPrice: number;
   maxPrice: number;
   modalPrice: number;
-  previousModalPrice: number;
+  previousModalPrice: number | null;
   arrivalDate: string;
 }
 
