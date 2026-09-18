@@ -7,7 +7,7 @@ import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 import { Select } from '../components/Select';
 import { EmptyState } from '../components/EmptyState';
-import { MessageSquareIcon, UserIcon, MapPinIcon, PlusIcon, BadgeCheckIcon } from 'lucide-react';
+import { MessageSquareIcon, UserIcon, MapPinIcon, PlusIcon, BadgeCheckIcon, SearchIcon } from 'lucide-react';
 
 let seedPosts: any[] = [];
 try {
@@ -88,25 +88,28 @@ export function Community() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 pb-20 pt-6 px-4 sm:px-6">
+    <div className="space-y-6">
       <header className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight text-ink">{t('community.title', 'Farmer Community')}</h1>
         <p className="text-sm text-ink-muted">{t('community.subtitle', 'Ask questions, share knowledge, and connect with experts.')}</p>
       </header>
 
-      <div className="flex gap-2 items-end">
-        <div className="flex-1">
+      <div className="flex gap-2">
+        <div className="flex-1 relative">
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" size={18} />
           <Input 
             label={t('community.searchLabel', 'Search Questions')}
+            hideLabel
+            className="pl-10"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t('community.search', 'Search discussions...')}
             type="search"
           />
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="mb-[2px] h-[48px]">
-          <PlusIcon className="h-4 w-4 mr-2" />
-          {t('community.askQuestion', 'Ask')}
+        <Button onClick={() => setShowForm(!showForm)} className="h-[48px]">
+          <PlusIcon className="h-4 w-4 sm:mr-2" />
+          <span className="hidden sm:inline">{t('community.askQuestion', 'Ask')}</span>
         </Button>
       </div>
 

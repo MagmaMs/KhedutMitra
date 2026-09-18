@@ -7,16 +7,17 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   hint?: string;
   suffix?: string;
+  hideLabel?: boolean;
 }
 
-export function Input({ label, error, hint, suffix, className, id, ...props }: InputProps) {
+export function Input({ label, error, hint, suffix, hideLabel, className, id, ...props }: InputProps) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
   const describedBy = error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined;
 
   return (
     <div className="w-full">
-      <label htmlFor={inputId} className="mb-1.5 block text-sm font-semibold text-ink">
+      <label htmlFor={inputId} className={cn('mb-1.5 block text-sm font-semibold text-ink', hideLabel && 'sr-only')}>
         {label}
       </label>
       <div className="relative">

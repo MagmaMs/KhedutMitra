@@ -36,7 +36,7 @@ export function Schemes() {
     : schemes.filter((s: any) => s.category === filter);
 
   return (
-    <div className="space-y-6 p-4 md:p-8">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           {t('schemes.title')}
@@ -54,7 +54,7 @@ export function Schemes() {
             key={c}
             onClick={() => setFilter(c)}
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-              filter === c ? 'bg-brand text-surface' : 'bg-canvas text-ink border border-line'
+              filter === c ? 'bg-brand text-white border border-brand' : 'bg-canvas text-ink border border-line hover:border-ink-muted/50'
             }`}
           >
             {c}

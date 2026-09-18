@@ -46,7 +46,7 @@ export function DiseaseTracker() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-8">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           {t('diseaseTracker.title') || 'Disease Tracker'}
@@ -59,7 +59,7 @@ export function DiseaseTracker() {
       <Notice tone="info" message="AI disease analysis powered by remote models." />
 
       {!preview ? (
-        <Card className="border-2 border-dashed border-line p-8 text-center hover:border-brand transition-colors">
+        <Card padded={false} className="border-2 border-dashed border-line text-center hover:border-brand transition-colors">
           <input
             type="file"
             accept="image/jpeg, image/png, image/webp"
@@ -68,7 +68,7 @@ export function DiseaseTracker() {
             className="hidden"
             id="image-upload"
           />
-          <label htmlFor="image-upload" className="cursor-pointer flex flex-col items-center">
+          <label htmlFor="image-upload" className="cursor-pointer flex flex-col items-center w-full h-full p-8">
             <Camera className="h-12 w-12 text-ink-muted mb-4" />
             <p className="text-lg font-medium text-ink">Tap to capture or upload</p>
             <p className="text-sm text-ink-muted mt-2">JPEG, PNG, WebP (Max 10MB)</p>

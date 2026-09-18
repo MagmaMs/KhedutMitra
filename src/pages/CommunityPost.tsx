@@ -63,15 +63,14 @@ export function CommunityPost() {
 
   if (!post) {
     return (
-      <div className="mx-auto max-w-3xl pt-6 px-4">
-        <Button variant="secondary" onClick={() => navigate('/community')} className="mb-4">
+      <div className="space-y-6">
+        <Button variant="quiet" onClick={() => navigate('/community')} className="-ml-4 mb-4">
           <ArrowLeftIcon className="h-4 w-4 mr-2" />
-          {t('common.back', 'Back')}
+          {t('common.back', 'Back to Community')}
         </Button>
         <EmptyState 
-          icon={<MessageSquareIcon className="h-8 w-8 text-ink-muted" />}
-          title={t('community.postNotFound', 'Post not found')}
-          description={t('community.postNotFoundDesc', 'The discussion you are looking for does not exist.')}
+          title="Post not found" 
+          description="This discussion may have been removed." 
         />
       </div>
     );
@@ -98,7 +97,7 @@ export function CommunityPost() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 pb-20 pt-6 px-4 sm:px-6">
+    <div className="space-y-6">
       <button 
         onClick={() => navigate('/community')}
         className="flex items-center text-sm font-semibold text-ink-muted hover:text-ink transition-colors"

@@ -54,7 +54,7 @@ export function AgriMarket() {
   });
 
   return (
-    <div className="space-y-6 p-4 md:p-8">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           {t('agriMarket.title') || 'Agricultural Market'}
@@ -70,6 +70,8 @@ export function AgriMarket() {
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" size={18} />
           <Input 
+            label="Search products"
+            hideLabel
             className="pl-10" 
             placeholder={t('agriMarket.search') || 'Search products...'}
             value={search}
@@ -78,6 +80,8 @@ export function AgriMarket() {
         </div>
         <div className="w-full sm:w-48">
           <Select 
+            label="Sort by"
+            hideLabel
             value={sort}
             onChange={(e: any) => setSort(e.target.value)}
             options={sortOptions}
@@ -91,7 +95,7 @@ export function AgriMarket() {
             key={c}
             onClick={() => setCategory(c)}
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-              category === c ? 'bg-brand text-surface' : 'bg-canvas text-ink border border-line'
+              category === c ? 'bg-brand text-white border border-brand' : 'bg-canvas text-ink border border-line hover:border-ink-muted/50'
             }`}
           >
             {c}

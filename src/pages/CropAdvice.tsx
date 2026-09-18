@@ -37,7 +37,7 @@ export function CropAdvice() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-8">
+    <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           {t('cropAdvice.title') || 'AI Crop Advice'}
@@ -66,6 +66,8 @@ export function CropAdvice() {
       <Card className="p-4">
         <div className="flex gap-2">
           <Input 
+            label="Ask a custom question"
+            hideLabel
             className="flex-1"
             placeholder={t('cropAdvice.askPlaceholder') || 'Ask a custom question...'}
             value={question}

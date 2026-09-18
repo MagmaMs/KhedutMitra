@@ -56,7 +56,7 @@ export function FarmProfile() {
   const cropOptions = crops?.map((c: any) => ({ value: c.id, label: c.name })) || [];
 
   return (
-    <div className="space-y-4 p-4 md:p-8">
+    <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           {t('farmProfile.title') || 'Farm Profile'}

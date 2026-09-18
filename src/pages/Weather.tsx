@@ -15,7 +15,7 @@ export function Weather() {
   const { data: weather, loading, error } = useWeather() || { data: null, loading: false, error: null };
 
   return (
-    <div className="space-y-4 p-4 md:p-8">
+    <div className="space-y-4">
       <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-ink sm:text-3xl">
           {t('weather.title') || 'Detailed Weather'}
