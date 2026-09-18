@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Select, Button } from '../components';
 import { useLanguage } from '../hooks/useLanguage';
 import { useToast } from '../hooks/useToast';
+import { useAuth } from '../hooks/useAuth';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { Save } from 'lucide-react';
 import { crops } from '../data/crops';
 
@@ -25,9 +27,11 @@ const budgetOptions = [
 
 export function FarmProfile() {
   const { t } = useLanguage();
-  
+  const { user } = useAuth();
   const { showToast } = useToast();
 
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     soilType: '',
     currentCrop: '',
@@ -35,6 +39,45 @@ export function FarmProfile() {
     previousCrop: '',
     irrigation: false,
   });
+
+  useEffect(() => {
+    async function loadProfile() {
+      if (!isSupabaseConfigured || !user || !supabase) {
+        // Fallback to local storage for demo
+        const cached = localStorage.getItem(`km_farm_${user?.id}`);
+        if (cached) {
+          try {
+            setFormData(JSON.parse(cached));
+          } catch { /* ignore */ }
+        }
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('farm_profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        if (!error && data) {
+          setFormData({
+            soilType: data.soil_type || '',
+            currentCrop: data.current_crop || '',
+            budget: data.budget || '',
+            previousCrop: data.previous_crop || '',
+            irrigation: data.irrigation_available || false,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load farm profile', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProfile();
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -48,11 +91,45 @@ export function FarmProfile() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    showToast(t('farmProfile.saveSuccess') || 'Farm profile saved successfully!', 'success');
+  const handleSave = async () => {
+    setSaving(true);
+    
+    if (!isSupabaseConfigured || !user || !supabase) {
+      localStorage.setItem(`km_farm_${user?.id}`, JSON.stringify(formData));
+      showToast(t('farmProfile.saveSuccess') || 'Farm profile saved successfully!', 'success');
+      setSaving(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('farm_profiles')
+        .upsert({
+          id: user.id,
+          soil_type: formData.soilType,
+          current_crop: formData.currentCrop,
+          budget: formData.budget,
+          previous_crop: formData.previousCrop,
+          irrigation_available: formData.irrigation,
+          completed: true,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+      showToast(t('farmProfile.saveSuccess') || 'Farm profile saved successfully!', 'success');
+    } catch (err) {
+      console.error('Failed to save profile', err);
+      showToast('Failed to save profile. Please try again.', 'error');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const cropOptions = crops?.map((c: any) => ({ value: c.id, label: c.name })) || [];
+
+  if (loading) {
+    return <div className="p-8 text-center text-ink-muted">{t('common.loading') || 'Loading...'}</div>;
+  }
 
   return (
     <div className="space-y-4">
@@ -129,8 +206,8 @@ export function FarmProfile() {
             </label>
           </div>
 
-          <Button onClick={handleSave} className="w-full sm:w-auto" icon={<Save size={18} />}>
-            {t('farmProfile.save') || 'Save Profile'}
+          <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto" icon={<Save size={18} />}>
+            {saving ? (t('common.saving') || 'Saving...') : (t('farmProfile.save') || 'Save Profile')}
           </Button>
         </div>
       </Card>
