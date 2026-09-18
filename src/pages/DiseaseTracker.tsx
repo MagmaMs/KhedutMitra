@@ -25,23 +25,24 @@ export function DiseaseTracker() {
     }
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!file) return;
     setLoading(true);
     setResult(null);
+    setError(null);
     
-    // Demo adapter
-    setTimeout(() => {
-      setResult({
-        diagnosis: "Leaf Blight",
-        confidence: 92,
-        severity: "High",
-        explanation: "Fungal infection typically caused by high humidity and poor air circulation.",
-        recommendations: ["Remove affected leaves", "Apply fungicide containing Mancozeb"],
-        prevention: ["Ensure proper plant spacing", "Avoid overhead watering"]
-      });
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      const { aiApi } = await import('../api/features');
+      const response = await aiApi.analyzeDisease(formData);
+      setResult(response);
+    } catch (err) {
+      setError('Failed to analyze image. Please try again.');
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -55,7 +56,7 @@ export function DiseaseTracker() {
         </p>
       </div>
 
-      <Notice type="warning" message="Demo: Disease analysis model not connected." />
+      <Notice tone="info" message="AI disease analysis powered by remote models." />
 
       {!preview ? (
         <Card className="border-2 border-dashed border-line p-8 text-center hover:border-brand transition-colors">
@@ -80,14 +81,14 @@ export function DiseaseTracker() {
             <Button className="flex-1" onClick={handleAnalyze} disabled={loading}>
               {loading ? 'Analyzing...' : 'Analyze Image'}
             </Button>
-            <Button variant="outline" onClick={() => { setPreview(null); setFile(null); setResult(null); }}>
+            <Button variant="secondary" onClick={() => { setPreview(null); setFile(null); setResult(null); setError(null); }}>
               Clear
             </Button>
           </div>
         </Card>
       )}
 
-      {error && <ErrorState message={error} />}
+      {error && <ErrorState title="Analysis Error" body={error} />}
 
       {result && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -117,7 +118,7 @@ export function DiseaseTracker() {
                 </ul>
               </div>
 
-              <Notice type="info" message={`Prevention: ${result.prevention.join(', ')}`} />
+              <Notice tone="info" message={`Prevention: ${result.prevention.join(', ')}`} />
             </div>
           </Card>
         </motion.div>

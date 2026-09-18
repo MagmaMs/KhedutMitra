@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Card, Button, Input, Select, Notice, EmptyState } from '../components';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatRupees } from '../utils/format';
-import { products } from '../data/products';
 import { Star, Search, Filter } from 'lucide-react';
 
 const categories = ['All', 'Seeds', 'Fertilizers', 'Pesticides', 'Insecticides', 'Tools', 'Machinery', 'Irrigation', 'Other'];
@@ -17,6 +16,30 @@ export function AgriMarket() {
   const [category, setCategory] = useState('All');
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('rating');
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    import('../api/features').then(({ productsApi }) => {
+      productsApi.getProducts().then(data => {
+        if (!cancelled) {
+          setProducts(data || []);
+          setLoading(false);
+        }
+      }).catch(() => {
+        if (!cancelled) {
+          // Fallback to static mock if API fails
+          import('../data/products').then(mock => {
+            setProducts(mock.products || []);
+            setLoading(false);
+          });
+        }
+      });
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   let filtered = (products || []).filter((p: any) => {
     const matchCat = category === 'All' || p.category === category;
@@ -41,7 +64,7 @@ export function AgriMarket() {
         </p>
       </div>
 
-      <Notice type="info" message="Demo catalog: Products and prices are illustrative." />
+      <Notice tone="info" message="Demo catalog: Products and prices are illustrative." />
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1 relative">
@@ -76,7 +99,13 @@ export function AgriMarket() {
         ))}
       </div>
 
-      {filtered.length > 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map(i => (
+            <Card key={i} className="p-4 h-64 animate-pulse bg-canvas/50" />
+          ))}
+        </div>
+      ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {filtered.map((product: any, idx: number) => (
             <Card key={idx} className="p-4 flex flex-col">

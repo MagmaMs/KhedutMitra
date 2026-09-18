@@ -38,15 +38,26 @@ export function useMarketPrices(cropId: string, stateId: string, districtId: str
       return;
     }
 
+    let cancelled = false;
     setStatus('loading');
-    const timer = window.setTimeout(() => {
-      const result = getMarketPrices(cropId, stateId, districtId);
-      setPrices(result);
-      if (result.length === 0) setStatus('empty');else
-      setStatus(priceState === 'cached' ? 'fallback' : 'ready');
-    }, 450);
 
-    return () => window.clearTimeout(timer);
+    import('../api/prices').then(({ pricesApi }) => {
+      pricesApi.getMarketPrices(cropId, stateId, districtId)
+        .then((result) => {
+          if (cancelled) return;
+          setPrices(result);
+          if (result.length === 0) setStatus('empty');
+          else setStatus(priceState === 'cached' ? 'fallback' : 'ready');
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setStatus('error');
+        });
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [cropId, stateId, districtId, priceState, token]);
 
   return { status, prices, refetch };

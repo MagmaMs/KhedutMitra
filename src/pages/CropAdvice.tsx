@@ -18,22 +18,22 @@ export function CropAdvice() {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAsk = (topic?: string) => {
+  const handleAsk = async (topic?: string) => {
     setLoading(true);
     setResult(null);
+    setError(null);
     
-    // Demo adapter
-    setTimeout(() => {
-      setResult({
-        recommendation: "Apply Neem oil extract (5%) evenly on the affected leaves.",
-        why: "Neem acts as a natural pest repellent without harming beneficial insects.",
-        actions: ["Mix 5ml Neem oil with 1L water", "Spray early morning or late evening", "Repeat after 7 days"],
-        cautions: ["Do not spray during strong sunlight to avoid leaf burn."],
-        sources: ["Indian Agricultural Research Institute (IARI) guidelines"]
-      });
+    try {
+      const { aiApi } = await import('../api/features');
+      const response = await aiApi.getAdvice(question || topic || 'General advice');
+      setResult(response);
+    } catch (err) {
+      setError('Failed to fetch AI advice. Please try again.');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -47,7 +47,7 @@ export function CropAdvice() {
         </p>
       </div>
 
-      <Notice type="warning" message="Demo: AI advisor not connected. Showing sample response." />
+      <Notice tone="info" message="AI advisor powered by real-time models." />
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {topics.map((topic) => (
@@ -75,6 +75,12 @@ export function CropAdvice() {
         </div>
       </Card>
 
+      {error && (
+        <div className="p-4 bg-danger-soft text-danger rounded-md border border-danger/30">
+          {error}
+        </div>
+      )}
+
       {loading && (
         <div className="space-y-4">
           <Skeleton className="h-24 w-full" />
@@ -98,7 +104,7 @@ export function CropAdvice() {
               {result.actions.map((act: string, idx: number) => <li key={idx}>{act}</li>)}
             </ul>
           </div>
-          <Notice type="error" message={result.cautions.join(' ')} />
+          <Notice tone="info" message={result.cautions.join(' ')} />
           <div className="text-xs text-ink-muted italic">
             Sources: {result.sources.join(', ')}
           </div>

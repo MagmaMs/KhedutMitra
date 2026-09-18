@@ -11,21 +11,6 @@ interface UseWeatherResult {
   refetch: () => void;
 }
 
-const API_URL = 'https://api.open-meteo.com/v1/forecast';
-
-function buildUrl(district: District): string {
-  const params = new URLSearchParams({
-    latitude: String(district.lat),
-    longitude: String(district.lon),
-    current: 'temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m',
-    hourly: 'precipitation_probability,precipitation',
-    daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum',
-    timezone: 'auto',
-    forecast_days: '5'
-  });
-  return `${API_URL}?${params.toString()}`;
-}
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 function parseWeather(payload: any): WeatherData {
   const hourlyTimes: string[] = payload.hourly?.time ?? [];
@@ -103,20 +88,18 @@ export function useWeather(district: District | undefined): UseWeatherResult {
     let cancelled = false;
     setStatus('loading');
 
-    fetch(buildUrl(district)).
-    then((response) => {
-      if (!response.ok) throw new Error('Weather request failed');
-      return response.json();
-    }).
-    then((payload) => {
-      if (cancelled) return;
-      setWeather(parseWeather(payload));
-      setStatus('ready');
-    }).
-    catch(() => {
-      if (cancelled) return;
-      setWeather(buildFallbackWeather());
-      setStatus('fallback');
+    import('../api/weather').then(({ weatherApi }) => {
+      weatherApi.getForecast(district.lat, district.lon)
+        .then((payload) => {
+          if (cancelled) return;
+          setWeather(parseWeather(payload));
+          setStatus('ready');
+        })
+        .catch(() => {
+          if (cancelled) return;
+          setWeather(buildFallbackWeather());
+          setStatus('fallback');
+        });
     });
 
     return () => {

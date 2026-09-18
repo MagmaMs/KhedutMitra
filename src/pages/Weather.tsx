@@ -25,7 +25,7 @@ export function Weather() {
         </p>
       </div>
 
-      <Notice type="info" message={t('weather.advisoryNotice') || 'Weather conditions are optimal for spraying today.'} />
+      <Notice tone="info" message={t('weather.advisoryNotice') || 'Weather conditions are optimal for spraying today.'} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4 flex items-center gap-4">
