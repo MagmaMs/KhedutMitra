@@ -31,7 +31,9 @@ export function Signup() {
   const [stateId, setStateId] = useState('');
   const [districtId, setDistrictId] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
+  const [generalError, setGeneralError] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const districtOptions = useMemo(() => {
     const region = findState(stateId);
@@ -48,20 +50,29 @@ export function Signup() {
     return next;
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setSubmitted(true);
     const next = validate();
     setErrors(next);
     if (Object.keys(next).length > 0) return;
-    signup({ name, phone, password, role, state: stateId, district: districtId });
+
+    setSubmitting(true);
+    setGeneralError('');
+    const error = await signup({ name, phone, password, role, state: stateId, district: districtId });
+    setSubmitting(false);
+
+    if (error) {
+      setGeneralError(error);
+      return;
+    }
     navigate(role === 'farmer' ? '/home' : '/marketplace');
   }
 
-  const roleOptions: Array<{id: Role;icon: typeof SproutIcon;titleKey: string;bodyKey: string;}> = [
-  { id: 'farmer', icon: SproutIcon, titleKey: 'auth.farmer', bodyKey: 'auth.farmerDesc' },
-  { id: 'buyer', icon: StoreIcon, titleKey: 'auth.buyer', bodyKey: 'auth.buyerDesc' }];
-
+  const roleOptions: Array<{ id: Role; icon: typeof SproutIcon; titleKey: string; bodyKey: string }> = [
+    { id: 'farmer', icon: SproutIcon, titleKey: 'auth.farmer', bodyKey: 'auth.farmerDesc' },
+    { id: 'buyer', icon: StoreIcon, titleKey: 'auth.buyer', bodyKey: 'auth.buyerDesc' }
+  ];
 
   return (
     <div className="mx-auto w-full max-w-xl py-4 sm:py-8">
@@ -82,7 +93,7 @@ export function Signup() {
                     'transition-[border-color] duration-150 ease-out-soft',
                     selected ? 'border-brand ring-1 ring-brand' : 'border-line hover:border-ink-muted/50'
                   )}>
-                  
+
                   <input
                     type="radio"
                     name="role"
@@ -90,7 +101,7 @@ export function Signup() {
                     checked={selected}
                     onChange={() => setRole(option.id)}
                     className="sr-only" />
-                  
+
                   <span className="flex items-center justify-between">
                     <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-soft">
                       <option.icon className="h-5 w-5 text-brand-deep" aria-hidden="true" />
@@ -102,7 +113,6 @@ export function Signup() {
                   <span className="mt-3 text-lg font-bold tracking-tight text-ink">{t(option.titleKey)}</span>
                   <span className="mt-1 text-sm text-ink-muted">{t(option.bodyKey)}</span>
                 </label>);
-
             })}
           </div>
         </fieldset>
@@ -114,7 +124,7 @@ export function Signup() {
             value={name}
             error={errors.name}
             onChange={(event) => setName(event.target.value)} />
-          
+
           <Input
             label={t('auth.phone')}
             type="tel"
@@ -124,7 +134,7 @@ export function Signup() {
             value={phone}
             error={errors.phone}
             onChange={(event) => setPhone(event.target.value)} />
-          
+
           <Input
             label={t('auth.password')}
             type="password"
@@ -132,7 +142,7 @@ export function Signup() {
             value={password}
             error={errors.password}
             onChange={(event) => setPassword(event.target.value)} />
-          
+
           <div className="grid gap-4 sm:grid-cols-2">
             <Select
               label={t('auth.state')}
@@ -144,7 +154,7 @@ export function Signup() {
                 setStateId(event.target.value);
                 setDistrictId('');
               }} />
-            
+
             <Select
               label={t('auth.district')}
               placeholder={stateId ? t('auth.district') : t('auth.selectStateFirst')}
@@ -153,9 +163,12 @@ export function Signup() {
               disabled={!stateId}
               options={districtOptions}
               onChange={(event) => setDistrictId(event.target.value)} />
-            
           </div>
         </Card>
+
+        {generalError ?
+        <p className="text-sm font-semibold text-danger" role="alert">{generalError}</p> :
+        null}
 
         {submitted && Object.keys(errors).length > 0 ?
         <p className="flex items-center gap-2 text-sm font-semibold text-danger" role="alert">
@@ -164,8 +177,8 @@ export function Signup() {
           </p> :
         null}
 
-        <Button type="submit" size="lg" fullWidth>
-          {t('action.signup')}
+        <Button type="submit" size="lg" fullWidth disabled={submitting}>
+          {submitting ? t('common.loading') : t('action.signup')}
         </Button>
       </form>
 
@@ -176,5 +189,4 @@ export function Signup() {
         </Link>
       </p>
     </div>);
-
 }

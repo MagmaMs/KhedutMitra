@@ -14,16 +14,26 @@ export function Login() {
 
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{phone?: string;password?: string;}>({});
+  const [errors, setErrors] = useState<{ phone?: string; password?: string; general?: string }>({});
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    const nextErrors: {phone?: string;password?: string;} = {};
+    const nextErrors: { phone?: string; password?: string } = {};
     if (!/^[0-9]{10}$/.test(phone.replace(/\D/g, '').slice(-10))) nextErrors.phone = t('validation.phone');
     if (password.length < 6) nextErrors.password = t('validation.password');
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
-    login(phone);
+
+    setSubmitting(true);
+    const error = await login(phone, password);
+    setSubmitting(false);
+
+    if (error) {
+      setErrors({ general: error });
+      return;
+    }
+    // Demo mode always logs in as farmer; real Supabase will trigger onAuthStateChange
     navigate('/home');
   }
 
@@ -43,7 +53,7 @@ export function Login() {
             value={phone}
             error={errors.phone}
             onChange={(event) => setPhone(event.target.value)} />
-          
+
           <Input
             label={t('auth.password')}
             type="password"
@@ -51,9 +61,13 @@ export function Login() {
             value={password}
             error={errors.password}
             onChange={(event) => setPassword(event.target.value)} />
-          
-          <Button type="submit" size="lg" fullWidth>
-            {t('action.login')}
+
+          {errors.general ?
+          <p className="text-sm font-semibold text-danger" role="alert">{errors.general}</p> :
+          null}
+
+          <Button type="submit" size="lg" fullWidth disabled={submitting}>
+            {submitting ? t('common.loading') : t('action.login')}
           </Button>
         </form>
       </Card>
@@ -67,5 +81,4 @@ export function Login() {
         </Link>
       </p>
     </div>);
-
 }
