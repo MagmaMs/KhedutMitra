@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getMarketPrices } from '../data/markets';
 import { useDemoState } from '../contexts/DemoContext';
 import type { DataStatus, MarketPrice } from '../types';
 

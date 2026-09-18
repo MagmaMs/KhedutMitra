@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button, Notice, ErrorState } from '../components';
 import { useLanguage } from '../hooks/useLanguage';
-import { Upload, Camera, AlertCircle, CheckCircle } from 'lucide-react';
+import { Camera, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export function DiseaseTracker() {

@@ -66,23 +66,6 @@ app.get('/api/prices', async (req, res) => {
   }
 });
 
-app.get('/api/prices/history', async (req, res) => {
-  try {
-    if (!req.query.crop || !req.query.market) {
-       return res.status(400).json({ error: 'Missing required parameters: crop, market' });
-    }
-    // Demo history
-    const history = Array.from({ length: 7 }).map((_, i) => ({
-      date: new Date(Date.now() - (6 - i) * 86400000).toISOString(),
-      modalPrice: 7000 + Math.random() * 1000
-    }));
-    res.json(history);
-  } catch (err: any) {
-    console.error('Price History API Error:', err);
-    res.status(500).json({ error: 'Failed to fetch price history' });
-  }
-});
-
 // ── AI & ML ─────────────────────────────────────────────────────
 app.post('/api/ai/advice', async (req, res) => {
   try {
@@ -96,7 +79,19 @@ app.post('/api/ai/advice', async (req, res) => {
   }
 });
 
-app.post('/api/ai/disease', upload.single('image'), async (req, res) => {
+app.post('/api/ai/disease', (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({ error: 'File too large. Maximum size is 10MB.' });
+      }
+      return res.status(400).json({ error: 'File upload error' });
+    } else if (err) {
+      return res.status(500).json({ error: 'Unknown upload error' });
+    }
+    next();
+  });
+}, async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No image file uploaded' });

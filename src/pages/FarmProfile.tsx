@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Select, Button, Input } from '../components';
-import { useAuth } from '../hooks/useAuth';
+import { Card, Select, Button } from '../components';
 import { useLanguage } from '../hooks/useLanguage';
 import { useToast } from '../hooks/useToast';
 import { Save } from 'lucide-react';
@@ -26,7 +25,7 @@ const budgetOptions = [
 
 export function FarmProfile() {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  
   const { showToast } = useToast();
 
   const [formData, setFormData] = useState({

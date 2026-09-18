@@ -84,7 +84,7 @@ export function CommunityPost() {
     }
     const answer = {
       id: String(Date.now()),
-      postId: id!,
+      postId: id || '',
       body: newAnswer,
       authorName: 'Current User',
       timeAgo: 'Just now',

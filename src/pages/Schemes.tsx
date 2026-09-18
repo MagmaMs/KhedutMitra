@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button, Notice } from '../components';
 import { useLanguage } from '../hooks/useLanguage';
-import { ExternalLink, ShieldCheck } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 const categories = ['All', 'Subsidy', 'Insurance', 'Credit', 'Equipment'];
 

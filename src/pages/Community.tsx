@@ -17,11 +17,11 @@ export function Community() {
   const { showToast } = useToast();
   const navigate = useNavigate();
   
-  const { posts, loading, addPost } = useCommunity();
+  const { posts, addPost } = useCommunity();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [showForm, setShowForm] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   
   const [newTitle, setNewTitle] = useState('');
   const [newBody, setNewBody] = useState('');
