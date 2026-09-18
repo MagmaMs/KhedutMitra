@@ -95,11 +95,21 @@ export function DiseaseTracker() {
           <Card className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-ink">{result.diagnosis}</h2>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${result.severity === 'High' ? 'bg-danger-soft text-danger' : 'bg-brand-soft text-brand'}`}>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                String(result.severity).toLowerCase() === 'high' ? 'bg-danger-soft text-danger' : 
+                String(result.severity).toLowerCase() === 'medium' ? 'bg-warning-soft text-warning' :
+                'bg-brand-soft text-brand'
+              }`}>
                 {result.severity} Severity
               </span>
             </div>
             
+            {result.diagnosis.includes('(Demo)') && (
+              <div className="mb-4">
+                <Notice tone="offline" message="This is a simulated demo result. The external machine learning model is currently disconnected or unavailable." />
+              </div>
+            )}
+
             <div className="flex items-center gap-2 mb-6">
               <CheckCircle className="text-brand h-5 w-5" />
               <span className="text-sm font-medium text-ink">{result.confidence}% Confidence</span>
@@ -118,7 +128,9 @@ export function DiseaseTracker() {
                 </ul>
               </div>
 
-              <Notice tone="info" message={`Prevention: ${result.prevention.join(', ')}`} />
+              {result.prevention && result.prevention.length > 0 && (
+                <Notice tone="info" message={`Prevention: ${result.prevention.join(', ')}`} />
+              )}
             </div>
           </Card>
         </motion.div>

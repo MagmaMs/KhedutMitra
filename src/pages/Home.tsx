@@ -22,6 +22,7 @@ import { useSelectedCrop } from '../contexts/CropContext';
 import { useTranslation } from '../hooks/useTranslation';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useWeather } from '../hooks/useWeather';
+import { useGeolocation } from '../hooks/useGeolocation';
 import { useMarketPrices } from '../hooks/useMarketPrices';
 import { findDistrict, findState } from '../data/locations';
 import { findCrop } from '../data/crops';
@@ -79,6 +80,7 @@ export function Home() {
   const navigate = useNavigate();
   const { selectedCropId } = useSelectedCrop();
   const { listings, status: listingsStatus } = useListings();
+  const { coords, requestLocation, loading: locationLoading } = useGeolocation();
 
   const stateId = user?.state ?? '';
   const districtId = user?.district ?? '';
@@ -86,7 +88,7 @@ export function Home() {
   const region = findState(stateId);
   const locationLabel = district && region ? `${district.name}, ${region.name}` : '';
 
-  const { status: weatherStatus, weather, refetch } = useWeather(district);
+  const { status: weatherStatus, weather, refetch } = useWeather(district, coords);
   const { status: priceStatus, prices } = useMarketPrices(selectedCropId, stateId, districtId);
 
   const crop = findCrop(selectedCropId);
@@ -108,6 +110,15 @@ export function Home() {
         <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-ink-muted">
             <MapPinIcon className="h-4 w-4" aria-hidden="true" />
             {locationLabel}
+            {!coords && (
+              <button 
+                onClick={requestLocation}
+                disabled={locationLoading}
+                className="ml-2 text-xs text-brand underline decoration-brand/30 hover:decoration-brand"
+              >
+                {locationLoading ? 'Locating...' : 'Use GPS'}
+              </button>
+            )}
           </p> :
         null}
       </header>

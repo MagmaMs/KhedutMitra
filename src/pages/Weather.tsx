@@ -3,6 +3,7 @@ import { Card, Notice, Button } from '../components';
 import { useLanguage } from '../hooks/useLanguage';
 import { useAuth } from '../hooks/useAuth';
 import { useWeather } from '../hooks/useWeather';
+import { useGeolocation } from '../hooks/useGeolocation';
 import { Cloud, Droplets, Wind, Sun, RefreshCw } from 'lucide-react';
 import { findDistrict } from '../data/locations';
 import { buildAdvisories } from '../utils/advisory';
@@ -16,7 +17,8 @@ export function Weather() {
     [user?.state, user?.district]
   );
   
-  const { status, weather, refetch } = useWeather(district);
+  const { coords, requestLocation, loading: locationLoading } = useGeolocation();
+  const { status, weather, refetch } = useWeather(district, coords);
   
   const advisories = useMemo(() => weather ? buildAdvisories(weather) : [], [weather]);
 

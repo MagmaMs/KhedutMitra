@@ -50,7 +50,7 @@ function parseWeather(payload: any): WeatherData {
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
-export function useWeather(district: District | undefined): UseWeatherResult {
+export function useWeather(district: District | undefined, coords?: {lat: number, lon: number} | null): UseWeatherResult {
   const { weatherState } = useDemoState();
   const [status, setStatus] = useState<WeatherStatus>('loading');
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -79,7 +79,11 @@ export function useWeather(district: District | undefined): UseWeatherResult {
       setWeather(buildFallbackWeather());
       return;
     }
-    if (!district) {
+    
+    const targetLat = coords?.lat ?? district?.lat;
+    const targetLon = coords?.lon ?? district?.lon;
+
+    if (targetLat === undefined || targetLon === undefined) {
       setStatus('noLocation');
       setWeather(null);
       return;
@@ -89,7 +93,7 @@ export function useWeather(district: District | undefined): UseWeatherResult {
     setStatus('loading');
 
     import('../api/weather').then(({ weatherApi }) => {
-      weatherApi.getForecast(district.lat, district.lon)
+      weatherApi.getForecast(targetLat, targetLon)
         .then((payload) => {
           if (cancelled) return;
           setWeather(parseWeather(payload));
@@ -105,7 +109,7 @@ export function useWeather(district: District | undefined): UseWeatherResult {
     return () => {
       cancelled = true;
     };
-  }, [district, weatherState, token]);
+  }, [district, coords, weatherState, token]);
 
   return { status, weather, refetch };
 }
