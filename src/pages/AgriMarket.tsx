@@ -22,23 +22,17 @@ export function AgriMarket() {
   React.useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    import('../api/features').then(({ productsApi }) => {
-      productsApi.getProducts().then(data => {
-        if (!cancelled) {
-          setProducts(data || []);
-          setLoading(false);
-        }
-      }).catch(() => {
-        if (!cancelled) {
-          // Fallback to static mock if API fails
-          import('../data/products').then(mock => {
-            setProducts(mock.products || []);
-            setLoading(false);
-          });
-        }
-      });
+    // Explicitly load the verified curated catalog
+    import('../data/products').then(mock => {
+      if (!cancelled) {
+        setProducts(mock.products || []);
+        setLoading(false);
+      }
     });
-    return () => { cancelled = true; };
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   let filtered = (products || []).filter((p: any) => {
@@ -140,8 +134,8 @@ export function AgriMarket() {
       ) : (
         <EmptyState 
           title="No products found" 
-          description="Try adjusting your filters or search terms." 
-          icon={<Filter className="h-8 w-8 text-ink-muted" />}
+          body="Try adjusting your filters or search terms." 
+          icon={Filter}
         />
       )}
     </div>

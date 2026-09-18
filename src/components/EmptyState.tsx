@@ -3,7 +3,7 @@ import { InboxIcon, BoxIcon } from "lucide-react";
 interface EmptyStateProps {
   title: string;
   body: string;
-  icon?: BoxIcon;
+  icon?: React.ElementType;
   action?: React.ReactNode;
 }
 export function EmptyState({

@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2Icon, InfoIcon } from 'lucide-react';
 
-type ToastTone = 'success' | 'info';
+type ToastTone = 'success' | 'info' | 'danger' | 'offline';
 
 interface Toast {
   id: number;

@@ -66,11 +66,11 @@ export function CommunityPost() {
       <div className="space-y-6">
         <Button variant="quiet" onClick={() => navigate('/community')} className="-ml-4 mb-4">
           <ArrowLeftIcon className="h-4 w-4 mr-2" />
-          {t('common.back', 'Back to Community')}
+          {t('common.back')}
         </Button>
         <EmptyState 
           title="Post not found" 
-          description="This discussion may have been removed." 
+          body="This discussion may have been removed." 
         />
       </div>
     );
@@ -79,7 +79,7 @@ export function CommunityPost() {
   const handleSubmitAnswer = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAnswer.trim()) {
-      showToast(t('community.error.emptyAnswer', 'Please write an answer'), 'info');
+      showToast(t('community.error.emptyAnswer'));
       return;
     }
     const answer = {
@@ -93,7 +93,7 @@ export function CommunityPost() {
     };
     setAnswers([...answers, answer]);
     setNewAnswer('');
-    showToast(t('community.answerPosted', 'Answer posted successfully'), 'success');
+    showToast(t('community.answerPosted'));
   };
 
   return (
@@ -103,7 +103,7 @@ export function CommunityPost() {
         className="flex items-center text-sm font-semibold text-ink-muted hover:text-ink transition-colors"
       >
         <ArrowLeftIcon className="h-4 w-4 mr-1.5" />
-        {t('community.backToCommunity', 'Back to Community')}
+        {t('community.backToCommunity')}
       </button>
 
       <Card className="p-5 bg-surface border-line space-y-4">
@@ -125,7 +125,7 @@ export function CommunityPost() {
             {post.isExpert && (
               <span className="inline-flex items-center gap-1 text-brand bg-brand-soft px-1.5 py-0.5 rounded text-xs font-bold">
                 <BadgeCheckIcon className="h-3.5 w-3.5" />
-                {t('community.verifiedExpert', 'Verified Expert')}
+                {t('community.verifiedExpert')}
               </span>
             )}
           </div>
@@ -141,7 +141,7 @@ export function CommunityPost() {
       <div className="space-y-4 pt-4">
         <h2 className="text-lg font-bold text-ink flex items-center gap-2">
           <MessageSquareIcon className="h-5 w-5" />
-          {answers.length} {t('community.answers', 'Answers')}
+          {answers.length} {t('community.answers')}
         </h2>
 
         {answers.map(answer => (
@@ -157,7 +157,7 @@ export function CommunityPost() {
                   {answer.isExpert && (
                     <span className="inline-flex items-center gap-1 text-brand bg-brand-soft px-1.5 py-0.5 rounded text-xs font-bold">
                       <BadgeCheckIcon className="h-3.5 w-3.5" />
-                      {t('community.verifiedExpert', 'Verified Expert')}
+                      {t('community.verifiedExpert')}
                     </span>
                   )}
                 </div>
@@ -167,7 +167,7 @@ export function CommunityPost() {
               {answer.isAccepted && (
                 <div className="flex items-center gap-1 text-brand text-xs font-bold bg-brand-soft px-2 py-1 rounded-full">
                   <CheckCircle2Icon className="h-3.5 w-3.5" />
-                  {t('community.acceptedAnswer', 'Accepted Answer')}
+                  {t('community.acceptedAnswer')}
                 </div>
               )}
             </div>
@@ -176,26 +176,26 @@ export function CommunityPost() {
 
         {answers.length === 0 && (
           <EmptyState 
-            icon={<MessageSquareIcon className="h-8 w-8 text-ink-muted" />}
-            title={t('community.noAnswers', 'No answers yet')}
-            description={t('community.beFirst', 'Be the first to share your knowledge.')}
+            icon={MessageSquareIcon}
+            title={t('community.noAnswers')}
+            body={t('community.beFirst')}
           />
         )}
       </div>
 
       <Card className="p-4 bg-surface border-line mt-6">
-        <h3 className="font-semibold text-ink mb-3">{t('community.yourAnswer', 'Your Answer')}</h3>
+        <h3 className="font-semibold text-ink mb-3">{t('community.yourAnswer')}</h3>
         <form onSubmit={handleSubmitAnswer} className="space-y-3">
           <textarea
             value={newAnswer}
             onChange={(e) => setNewAnswer(e.target.value)}
-            placeholder={t('community.answerPlaceholder', 'Write your answer here...')}
+            placeholder={t('community.answerPlaceholder')}
             className="min-h-[100px] w-full rounded-lg border border-line bg-white px-3.5 py-2 text-sm text-ink outline-none transition-[border-color] duration-150 hover:border-ink-muted/50 focus:border-brand focus:ring-1 focus:ring-brand"
             required
           />
           <div className="flex justify-end">
             <Button type="submit">
-              {t('community.submitAnswer', 'Post Answer')}
+              {t('community.submitAnswer')}
             </Button>
           </div>
         </form>

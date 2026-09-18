@@ -9,6 +9,7 @@ export function Schemes() {
   const { t, tl } = useLanguage();
   const [schemes, setSchemes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('All');
 
   React.useEffect(() => {
     let cancelled = false;

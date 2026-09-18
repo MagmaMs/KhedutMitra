@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Card, Notice, Button } from '../components';
+import { AdvisoryCard } from '../components/dashboard/AdvisoryCard';
 import { useLanguage } from '../hooks/useLanguage';
 import { useAuth } from '../hooks/useAuth';
 import { useWeather } from '../hooks/useWeather';
@@ -52,7 +53,7 @@ export function Weather() {
       </div>
 
       {advisories.length > 0 && (
-        <Notice tone="info" message={advisories[0].text} />
+        <AdvisoryCard advisories={advisories} />
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

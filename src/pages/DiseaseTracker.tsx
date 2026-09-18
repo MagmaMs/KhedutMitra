@@ -88,7 +88,7 @@ export function DiseaseTracker() {
         </Card>
       )}
 
-      {error && <ErrorState title="Analysis Error" body={error} />}
+      {error && <ErrorState title="Analysis Error" body={error} retryLabel="Try Again" onRetry={() => setError(null)} />}
 
       {result && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>

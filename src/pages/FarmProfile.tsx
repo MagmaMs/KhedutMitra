@@ -119,7 +119,7 @@ export function FarmProfile() {
       showToast(t('farmProfile.saveSuccess') || 'Farm profile saved successfully!', 'success');
     } catch (err) {
       console.error('Failed to save profile', err);
-      showToast('Failed to save profile. Please try again.', 'error');
+      showToast('Failed to save profile. Please try again.', 'danger');
     } finally {
       setSaving(false);
     }
@@ -144,11 +144,9 @@ export function FarmProfile() {
 
       <Card className="p-6">
         <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-ink mb-1">
-              {t('farmProfile.soilType') || 'Soil Type'}
-            </label>
+          <div className="pt-2">
             <Select
+              label={t('farmProfile.soilType') || 'Soil Type'}
               name="soilType"
               value={formData.soilType}
               onChange={(e: any) => handleSelectChange('soilType', e.target.value)}
@@ -157,10 +155,8 @@ export function FarmProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ink mb-1">
-              {t('farmProfile.currentCrop') || 'Current/Main Crop'}
-            </label>
             <Select
+              label={t('farmProfile.currentCrop') || 'Current/Main Crop'}
               name="currentCrop"
               value={formData.currentCrop}
               onChange={(e: any) => handleSelectChange('currentCrop', e.target.value)}
@@ -169,10 +165,8 @@ export function FarmProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ink mb-1">
-              {t('farmProfile.budget') || 'Farming Budget'}
-            </label>
             <Select
+              label={t('farmProfile.budget') || 'Farming Budget'}
               name="budget"
               value={formData.budget}
               onChange={(e: any) => handleSelectChange('budget', e.target.value)}
@@ -181,10 +175,8 @@ export function FarmProfile() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-ink mb-1">
-              {t('farmProfile.previousCrop') || 'Previous Crop (Optional)'}
-            </label>
             <Select
+              label={t('farmProfile.previousCrop') || 'Previous Crop (Optional)'}
               name="previousCrop"
               value={formData.previousCrop}
               onChange={(e: any) => handleSelectChange('previousCrop', e.target.value)}
@@ -206,7 +198,7 @@ export function FarmProfile() {
             </label>
           </div>
 
-          <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto" icon={<Save size={18} />}>
+          <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto flex items-center justify-center gap-2"><Save size={18} />
             {saving ? (t('common.saving') || 'Saving...') : (t('farmProfile.save') || 'Save Profile')}
           </Button>
         </div>
