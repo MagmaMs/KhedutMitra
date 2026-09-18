@@ -37,10 +37,7 @@ export default {
         card: '0 1px 2px rgba(28, 25, 23, 0.04), 0 1px 3px rgba(28, 25, 23, 0.06)',
       },
       maxWidth: {
-        content: [
-  './index.html',
-  './src/**/*.{js,ts,jsx,tsx}'
-],
+        content: '80rem',
       },
       transitionTimingFunction: {
         'out-soft': 'cubic-bezier(0.23, 1, 0.32, 1)',

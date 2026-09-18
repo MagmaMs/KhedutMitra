@@ -112,3 +112,111 @@ export interface Advisory {
   reasonKey: string;
   params?: Record<string, string | number>;
 }
+
+/* ── Farm Profile ──────────────────────────────────────────── */
+
+export interface FarmProfile {
+  soilType: string;
+  currentCrop: string;
+  budget: string;
+  previousCrop?: string;
+  irrigationAvailable?: boolean;
+  completed: boolean;
+  updatedAt: string;
+}
+
+/* ── Community ─────────────────────────────────────────────── */
+
+export interface CommunityPost {
+  id: string;
+  authorId: string;
+  authorName: string;
+  authorLocation?: string;
+  isExpert?: boolean;
+  title: string;
+  body: string;
+  crop?: string;
+  category?: string;
+  answerCount: number;
+  createdAt: string;
+}
+
+export interface CommunityAnswer {
+  id: string;
+  postId: string;
+  authorId: string;
+  authorName: string;
+  authorLocation?: string;
+  isExpert?: boolean;
+  body: string;
+  isAccepted?: boolean;
+  createdAt: string;
+}
+
+/* ── Government Schemes ────────────────────────────────────── */
+
+export interface GovernmentScheme {
+  id: string;
+  title: Localized;
+  description: Localized;
+  category: string;
+  officialUrl: string;
+  verifiedAt?: string;
+}
+
+/* ── Agri Products ─────────────────────────────────────────── */
+
+export type ProductCategory =
+  | 'seeds'
+  | 'fertilizers'
+  | 'pesticides'
+  | 'insecticides'
+  | 'tools'
+  | 'machinery'
+  | 'irrigation'
+  | 'other';
+
+export interface AgriProduct {
+  id: string;
+  name: string;
+  category: ProductCategory;
+  description?: string;
+  brand?: string;
+  vendor?: string;
+  price: number;
+  unit: string;
+  rating?: number;
+  ratingCount?: number;
+  availability: boolean;
+  location?: string;
+  sourceType: 'demo' | 'live';
+  updatedAt: string;
+}
+
+/* ── Disease Tracker ───────────────────────────────────────── */
+
+export interface DiseaseResult {
+  diagnosis: string;
+  confidence?: number;
+  severity?: 'low' | 'medium' | 'high';
+  explanation: string;
+  recommendations: string[];
+  prevention: string[];
+  crop?: string;
+}
+
+/* ── Crop Advice ───────────────────────────────────────────── */
+
+export interface AdviceTopic {
+  id: string;
+  titleKey: string;
+  icon: string;
+}
+
+export interface CropAdviceResponse {
+  recommendation: string;
+  reasoning: string;
+  actions: string[];
+  cautions: string[];
+  sources?: string[];
+}

@@ -13,19 +13,30 @@ interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
-export const languageOptions: Array<{id: Language;label: string;short: string;}> = [
-{ id: 'en', label: 'English', short: 'EN' },
-{ id: 'hi', label: 'हिन्दी', short: 'हि' },
-{ id: 'gu', label: 'ગુજરાતી', short: 'ગુ' }];
+export const languageOptions: Array<{ id: Language; label: string; short: string }> = [
+  { id: 'en', label: 'English', short: 'EN' },
+  { id: 'hi', label: 'हिन्दी', short: 'हि' },
+  { id: 'gu', label: 'ગુજરાતી', short: 'ગુ' }
+];
 
+function getInitialLanguage(): Language {
+  const saved = localStorage.getItem('km_language');
+  if (saved === 'en' || saved === 'hi' || saved === 'gu') return saved;
+  return 'en';
+}
 
-export function LanguageProvider({ children }: {children: React.ReactNode;}) {
-  const [language, setLanguage] = useState<Language>('en');
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+
+  const setLanguage = useCallback((lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('km_language', lang);
+  }, []);
 
   const t = useCallback(
     (key: string, params?: Record<string, string | number>) => {
       const entry = translations[key];
-      let text = entry ? entry[language] : key;
+      let text = entry ? (entry[language] || entry.en || key) : key;
       if (params) {
         Object.entries(params).forEach(([token, value]) => {
           text = text.replace(new RegExp(`\\{${token}\\}`, 'g'), String(value));
@@ -36,9 +47,9 @@ export function LanguageProvider({ children }: {children: React.ReactNode;}) {
     [language]
   );
 
-  const tl = useCallback((value: Localized) => value[language], [language]);
+  const tl = useCallback((value: Localized) => value[language] || value.en, [language]);
 
-  const contextValue = useMemo(() => ({ language, setLanguage, t, tl }), [language, t, tl]);
+  const contextValue = useMemo(() => ({ language, setLanguage, t, tl }), [language, setLanguage, t, tl]);
 
   return <LanguageContext.Provider value={contextValue}>{children}</LanguageContext.Provider>;
 }
