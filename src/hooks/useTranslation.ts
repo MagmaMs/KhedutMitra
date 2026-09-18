@@ -1,0 +1,1 @@
+export { useLanguage as useTranslation } from '../contexts/LanguageContext';

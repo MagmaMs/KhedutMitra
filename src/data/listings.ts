@@ -1,0 +1,149 @@
+import type { Listing } from '../types';
+
+function hoursAgo(hours: number): string {
+  const date = new Date();
+  date.setHours(date.getHours() - hours);
+  return date.toISOString();
+}
+
+export const seedListings: Listing[] = [
+{
+  id: 'lst-001',
+  cropId: 'cotton',
+  quantityKg: 900,
+  pricePerKg: 71,
+  status: 'active',
+  createdAt: hoursAgo(5),
+  farmerName: 'Ramesh Patel',
+  farmerPhone: '+91 98250 41233',
+  village: 'Vasad',
+  district: 'Anand',
+  state: 'Gujarat',
+  ownedByUser: true
+},
+{
+  id: 'lst-002',
+  cropId: 'groundnut',
+  quantityKg: 420,
+  pricePerKg: 58,
+  status: 'active',
+  createdAt: hoursAgo(27),
+  farmerName: 'Ramesh Patel',
+  farmerPhone: '+91 98250 41233',
+  village: 'Vasad',
+  district: 'Anand',
+  state: 'Gujarat',
+  ownedByUser: true
+},
+{
+  id: 'lst-003',
+  cropId: 'wheat',
+  quantityKg: 1200,
+  pricePerKg: 24,
+  status: 'sold',
+  createdAt: hoursAgo(220),
+  farmerName: 'Ramesh Patel',
+  farmerPhone: '+91 98250 41233',
+  village: 'Vasad',
+  district: 'Anand',
+  state: 'Gujarat',
+  ownedByUser: true
+},
+{
+  id: 'lst-004',
+  cropId: 'onion',
+  quantityKg: 300,
+  pricePerKg: 19,
+  status: 'withdrawn',
+  createdAt: hoursAgo(310),
+  farmerName: 'Ramesh Patel',
+  farmerPhone: '+91 98250 41233',
+  village: 'Vasad',
+  district: 'Anand',
+  state: 'Gujarat',
+  ownedByUser: true
+},
+{
+  id: 'lst-101',
+  cropId: 'tomato',
+  quantityKg: 260,
+  pricePerKg: 17,
+  status: 'active',
+  createdAt: hoursAgo(2),
+  farmerName: 'Dinesh Chaudhary',
+  farmerPhone: '+91 94260 78810',
+  village: 'Kadi',
+  district: 'Mehsana',
+  state: 'Gujarat',
+  ownedByUser: false
+},
+{
+  id: 'lst-102',
+  cropId: 'cumin',
+  quantityKg: 150,
+  pricePerKg: 248,
+  status: 'active',
+  createdAt: hoursAgo(9),
+  farmerName: 'Bhavna Solanki',
+  farmerPhone: '+91 99099 21470',
+  village: 'Unjha',
+  district: 'Mehsana',
+  state: 'Gujarat',
+  ownedByUser: false
+},
+{
+  id: 'lst-103',
+  cropId: 'potato',
+  quantityKg: 1800,
+  pricePerKg: 13,
+  status: 'active',
+  createdAt: hoursAgo(16),
+  farmerName: 'Kiran Vaghela',
+  farmerPhone: '+91 97250 33116',
+  village: 'Deesa',
+  district: 'Mehsana',
+  state: 'Gujarat',
+  ownedByUser: false
+},
+{
+  id: 'lst-104',
+  cropId: 'castor',
+  quantityKg: 640,
+  pricePerKg: 57,
+  status: 'active',
+  createdAt: hoursAgo(31),
+  farmerName: 'Alpesh Desai',
+  farmerPhone: '+91 90990 55201',
+  village: 'Padra',
+  district: 'Vadodara',
+  state: 'Gujarat',
+  ownedByUser: false
+},
+{
+  id: 'lst-105',
+  cropId: 'bajra',
+  quantityKg: 750,
+  pricePerKg: 22,
+  status: 'active',
+  createdAt: hoursAgo(44),
+  farmerName: 'Savita Rathod',
+  farmerPhone: '+91 98795 60412',
+  village: 'Gondal',
+  district: 'Rajkot',
+  state: 'Gujarat',
+  ownedByUser: false
+},
+{
+  id: 'lst-106',
+  cropId: 'soybean',
+  quantityKg: 980,
+  pricePerKg: 45,
+  status: 'active',
+  createdAt: hoursAgo(52),
+  farmerName: 'Mahesh Yadav',
+  farmerPhone: '+91 93020 11784',
+  village: 'Dewas',
+  district: 'Indore',
+  state: 'Madhya Pradesh',
+  ownedByUser: false
+}];

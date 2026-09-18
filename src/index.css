@@ -1,0 +1,54 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+:root {
+  --km-brand: #15803d;
+  --km-brand-deep: #0f3d24;
+  --km-brand-soft: #eef6f0;
+  --km-accent: #b45309;
+  --km-accent-soft: #fdf5e9;
+  --km-canvas: #fdfbf7;
+  --km-surface: #ffffff;
+  --km-ink: #1c1917;
+  --km-ink-muted: #57534e;
+  --km-line: #e7e5e4;
+  --km-danger: #b91c1c;
+  --km-danger-soft: #fdf1f1;
+}
+html,
+body,
+#root {
+  min-height: 100%;
+  width: 100%;
+}
+body {
+  background-color: var(--km-canvas);
+  color: var(--km-ink);
+  font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.km-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+*:focus-visible {
+  outline: 2px solid var(--km-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
