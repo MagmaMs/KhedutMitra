@@ -9,38 +9,7 @@ import { Select } from '../components/Select';
 import { EmptyState } from '../components/EmptyState';
 import { MessageSquareIcon, UserIcon, MapPinIcon, PlusIcon, BadgeCheckIcon, SearchIcon } from 'lucide-react';
 
-let seedPosts: any[] = [];
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const data = require('../data/community');
-  seedPosts = data.seedPosts || [];
-} catch (e) {
-  seedPosts = [
-    {
-      id: '1',
-      title: 'Best time to sow wheat in Gujarat?',
-      body: 'I am planning to sow Lok-1 variety this year. When is the ideal time considering current weather?',
-      authorName: 'Ramesh Patel',
-      authorLocation: 'Mehsana',
-      topic: 'Crop Rotation',
-      answerCount: 3,
-      isExpert: false,
-      timeAgo: '2 hours ago'
-    },
-    {
-      id: '2',
-      title: 'Organic alternatives for urea?',
-      body: 'Looking for cost-effective organic nitrogen sources for my cotton crop.',
-      authorName: 'Dr. Sharma',
-      authorLocation: 'Junagadh',
-      topic: 'Organic',
-      answerCount: 5,
-      isExpert: true,
-      timeAgo: '5 hours ago'
-    }
-  ];
-}
-
+import { useCommunity } from "../hooks/useCommunity";
 const CATEGORIES = ['All', 'Crop Rotation', 'Pest Control', 'Irrigation', 'Soil Health', 'Market', 'Weather', 'Organic'];
 
 export function Community() {
@@ -48,43 +17,42 @@ export function Community() {
   const { showToast } = useToast();
   const navigate = useNavigate();
   
-  const [posts, setPosts] = useState(seedPosts);
+  const { posts, loading, addPost } = useCommunity();
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [showForm, setShowForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [newTitle, setNewTitle] = useState('');
   const [newBody, setNewBody] = useState('');
   const [newTopic, setNewTopic] = useState('Crop Rotation');
 
-  const filteredPosts = posts.filter(post => {
+  const filteredPosts = posts.filter((post: any) => {
     const matchesSearch = post.title.toLowerCase().includes(search.toLowerCase()) || post.body.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = category === 'All' || post.topic === category;
     return matchesSearch && matchesCategory;
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim() || !newBody.trim()) {
       showToast(t('community.error.empty', 'Please fill all fields'), 'info');
       return;
     }
-    const newPost = {
-      id: String(Date.now()),
-      title: newTitle,
-      body: newBody,
-      authorName: 'Current User',
-      authorLocation: 'Gujarat',
-      topic: newTopic,
-      answerCount: 0,
-      isExpert: false,
-      timeAgo: 'Just now'
-    };
-    setPosts([newPost, ...posts]);
-    setShowForm(false);
-    setNewTitle('');
-    setNewBody('');
-    showToast(t('community.postCreated', 'Question posted successfully'), 'success');
+    
+    setIsSubmitting(true);
+    try {
+      await addPost(newTitle, newBody, newTopic);
+      setShowForm(false);
+      setNewTitle('');
+      setNewBody('');
+      showToast(t('community.success', 'Question posted successfully'), 'success');
+    } catch (err) {
+      console.error(err);
+      showToast(t('community.error', 'Failed to post question'), 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

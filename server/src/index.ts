@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import multer from 'multer';
 import { WeatherService } from './services/weatherService';
 import { PriceService } from './services/priceService';
 import { AiService } from './services/aiService';
@@ -12,6 +13,10 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 const app = express();
 const port = process.env.PORT || 3001;
+
+const upload = multer({ 
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
+});
 
 app.use(cors());
 app.use(express.json());
@@ -91,10 +96,12 @@ app.post('/api/ai/advice', async (req, res) => {
   }
 });
 
-app.post('/api/ai/disease', async (req, res) => {
+app.post('/api/ai/disease', upload.single('image'), async (req, res) => {
   try {
-    // In a real app, use multer to parse multipart form data
-    const data = await AiService.analyzeDisease(Buffer.from(''));
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file uploaded' });
+    }
+    const data = await AiService.analyzeDisease(req.file.buffer, req.file.mimetype);
     res.json(data);
   } catch (err: any) {
     console.error('AI Disease Error:', err);

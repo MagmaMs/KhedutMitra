@@ -108,20 +108,20 @@ export function MyListings() {
         <MyListingRow
           key={listing.id}
           listing={listing}
-          onMarkSold={(id) => {
-            setStatus(id, 'sold');
-            showToast(t('listing.markedSold'));
+          onMarkSold={async (id) => {
+            await setStatus(id, 'sold');
+            showToast(t('listing.markedSoldToast'));
           }}
-          onWithdraw={(id) => {
-            setStatus(id, 'withdrawn');
+          onWithdraw={async (id) => {
+            await setStatus(id, 'withdrawn');
             showToast(t('listing.withdrawnToast'));
           }}
-          onRelist={(id) => {
-            setStatus(id, 'active');
+          onRelist={async (id) => {
+            await setStatus(id, 'active');
             showToast(t('listing.relistedToast'));
           }}
-          onSavePrice={(id, price) => {
-            setPrice(id, price);
+          onSavePrice={async (id, price) => {
+            await setPrice(id, price);
             showToast(t('listing.priceUpdated'));
           }} />
 

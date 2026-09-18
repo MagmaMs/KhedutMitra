@@ -52,7 +52,7 @@ export function Sell() {
     setErrors(validate());
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const next = validate();
     setErrors(next);
@@ -62,7 +62,7 @@ export function Sell() {
     setPublishError(false);
     setSubmitting(true);
 
-    window.setTimeout(() => {
+    try {
       if (typeof navigator !== 'undefined' && navigator.onLine === false) {
         setSubmitting(false);
         setPublishError(true);
@@ -70,7 +70,7 @@ export function Sell() {
       }
       const region = findState(user?.state ?? '');
       const district = findDistrict(user?.state ?? '', user?.district ?? '');
-      addListing({
+      await addListing({
         cropId,
         quantityKg: quantityValue,
         pricePerKg: priceValue,
@@ -80,9 +80,13 @@ export function Sell() {
         district: district?.name ?? '',
         state: region?.name ?? ''
       });
-      setSubmitting(false);
       navigate('/sell/success');
-    }, 600);
+    } catch (err) {
+      console.error(err);
+      setPublishError(true);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
