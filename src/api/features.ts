@@ -29,8 +29,6 @@ export const aiApi = {
   analyzeDisease: (formData: FormData) => fetchApi<DiseaseResult>('/ai/disease', {
     method: 'POST',
     body: formData,
-    // Note: when using FormData, do not set Content-Type header; let the browser set it with the boundary
-    headers: { 'Content-Type': undefined } as any,
   }),
   
   getAdvice: (query: string, context?: any) => fetchApi<CropAdviceResponse>('/ai/advice', {

@@ -90,7 +90,14 @@ cd ..
 
 ## ▶️ How to Run the Project
 
-You need to run both the frontend and backend servers simultaneously.
+You can run both the frontend and backend servers simultaneously using a single command from the project root:
+
+```bash
+# Starts both frontend (Vite) and backend (Express) concurrently
+npm run dev:all
+```
+
+Alternatively, you can run them in separate terminals:
 
 **Terminal 1 (Backend Server):**
 ```bash
