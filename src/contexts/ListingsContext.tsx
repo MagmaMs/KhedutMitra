@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { seedListings } from '../data/listings';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useAuth } from '../hooks/useAuth';
+import { logger } from '../utils/logger';
 import type { DataStatus, Listing, ListingStatus } from '../types';
 
 export interface NewListingInput {
@@ -60,7 +61,7 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
               district: d.district,
               state: d.state,
               createdAt: d.created_at,
-              ownedByUser: user?.id === d.farmer_id
+              farmerId: d.farmer_id
             }));
             if (active) {
               setListings(mapped);
@@ -69,13 +70,13 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
             return;
           }
         } catch (e) {
-          console.error("Supabase listing fetch failed", e);
+          // Supabase fetch failed, will fall through to demo data
         }
       }
 
       // Fallback
       if (active) {
-        setListings(seedListings.map(l => ({...l, ownedByUser: l.ownedByUser || false})));
+        setListings(seedListings.map(l => ({...l, farmerId: l.id })));
         setDataStatus('ready');
       }
     }
@@ -83,7 +84,16 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
     fetchListings();
 
     return () => { active = false; };
-  }, [reloadToken, user?.id]);
+  }, [reloadToken]);
+
+  // Compute ownedByUser as derived state based on current user
+  const listingsWithOwnership = useMemo(() => 
+    listings.map(listing => ({
+      ...listing,
+      ownedByUser: user?.id === listing.farmerId
+    })),
+    [listings, user?.id]
+  );
 
   const reload = useCallback(() => setReloadToken((token) => token + 1), []);
 
@@ -103,7 +113,7 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
       }).select().single();
 
       if (error) {
-        console.error('Failed to create listing:', error);
+        logger.error('Failed to create listing', { error: error.message, code: error.code });
         throw new Error('Failed to create listing');
       }
 
@@ -120,6 +130,7 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
           district: data.district,
           state: data.state,
           createdAt: data.created_at,
+          farmerId: user.id,
           ownedByUser: true
         };
         setListings((current) => [listing, ...current]);
@@ -141,6 +152,7 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
       village: input.village,
       district: input.district,
       state: input.state,
+      farmerId: user?.id || 'demo-user',
       ownedByUser: true
     };
     setListings((current) => [listing, ...current]);
@@ -152,7 +164,7 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
     if (isSupabaseConfigured && supabase) {
       const { error } = await supabase.from('crop_listings').update({ status: next }).eq('id', id);
       if (error) {
-        console.error('Failed to update listing status:', error);
+        logger.error('Failed to update listing status', { error: error.message, code: error.code, listingId: id });
         throw new Error('Failed to update listing status');
       }
     }
@@ -163,18 +175,18 @@ export function ListingsProvider({ children }: {children: React.ReactNode;}) {
     if (isSupabaseConfigured && supabase) {
       const { error } = await supabase.from('crop_listings').update({ price_per_kg: pricePerKg }).eq('id', id);
       if (error) {
-        console.error('Failed to update listing price:', error);
+        logger.error('Failed to update listing price', { error: error.message, code: error.code, listingId: id });
         throw new Error('Failed to update listing price');
       }
     }
     setListings((current) => current.map((item) => item.id === id ? { ...item, pricePerKg } : item));
   }, []);
 
-  const getListing = useCallback((id: string) => listings.find((item) => item.id === id), [listings]);
+  const getListing = useCallback((id: string) => listingsWithOwnership.find((item) => item.id === id), [listingsWithOwnership]);
 
   const value = useMemo(
-    () => ({ listings, status, lastCreatedId, reload, addListing, setStatus, setPrice, getListing }),
-    [listings, status, lastCreatedId, reload, addListing, setStatus, setPrice, getListing]
+    () => ({ listings: listingsWithOwnership, status, lastCreatedId, reload, addListing, setStatus, setPrice, getListing }),
+    [listingsWithOwnership, status, lastCreatedId, reload, addListing, setStatus, setPrice, getListing]
   );
 
   return <ListingsContext.Provider value={value}>{children}</ListingsContext.Provider>;

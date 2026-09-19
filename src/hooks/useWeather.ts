@@ -11,8 +11,29 @@ interface UseWeatherResult {
   refetch: () => void;
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-function parseWeather(payload: any): WeatherData {
+interface OpenMeteoResponse {
+  current: {
+    temperature_2m: number;
+    apparent_temperature: number;
+    relative_humidity_2m: number;
+    wind_speed_10m: number;
+    weather_code: number;
+  };
+  hourly: {
+    time: string[];
+    precipitation_probability: number[];
+  };
+  daily: {
+    time: string[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+    precipitation_probability_max: number[];
+    precipitation_sum: number[];
+    weather_code: number[];
+  };
+}
+
+function parseWeather(payload: OpenMeteoResponse): WeatherData {
   const hourlyTimes: string[] = payload.hourly?.time ?? [];
   const hourlyProb: number[] = payload.hourly?.precipitation_probability ?? [];
   const now = Date.now();
@@ -48,7 +69,6 @@ function parseWeather(payload: any): WeatherData {
     observedAt: new Date().toISOString()
   };
 }
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 export function useWeather(district: District | undefined, coords?: {lat: number, lon: number} | null): UseWeatherResult {
   const { weatherState } = useDemoState();

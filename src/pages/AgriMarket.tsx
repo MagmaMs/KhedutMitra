@@ -3,8 +3,20 @@ import { Card, Input, Select, Notice, EmptyState } from '../components';
 import { useLanguage } from '../hooks/useLanguage';
 import { formatRupees } from '../utils/format';
 import { Star, Search, Filter } from 'lucide-react';
+import type { AgriProduct, ProductCategory } from '../types';
+import { products as productData } from '../data/products';
 
-const categories = ['All', 'Seeds', 'Fertilizers', 'Pesticides', 'Insecticides', 'Tools', 'Machinery', 'Irrigation', 'Other'];
+const categories: Array<{ id: ProductCategory | 'All'; label: string }> = [
+  { id: 'All', label: 'All' },
+  { id: 'seeds', label: 'Seeds' },
+  { id: 'fertilizers', label: 'Fertilizers' },
+  { id: 'pesticides', label: 'Pesticides' },
+  { id: 'insecticides', label: 'Insecticides' },
+  { id: 'tools', label: 'Tools' },
+  { id: 'machinery', label: 'Machinery' },
+  { id: 'irrigation', label: 'Irrigation' },
+  { id: 'other', label: 'Other' },
+];
 const sortOptions = [
   { value: 'rating', label: 'Highest Rated' },
   { value: 'price-asc', label: 'Price: Low to High' },
@@ -13,35 +25,26 @@ const sortOptions = [
 
 export function AgriMarket() {
   const { t } = useLanguage();
-  const [category, setCategory] = useState('All');
+  const [category, setCategory] = useState<ProductCategory | 'All'>('All');
   const [search, setSearch] = useState('');
-  const [sort, setSort] = useState('rating');
-  const [products, setProducts] = useState<any[]>([]);
+  const [sort, setSort] = useState<'rating' | 'price-asc' | 'price-desc'>('rating');
+  const [products, setProducts] = useState<AgriProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   React.useEffect(() => {
-    let cancelled = false;
     setLoading(true);
     // Explicitly load the verified curated catalog
-    import('../data/products').then(mock => {
-      if (!cancelled) {
-        setProducts(mock.products || []);
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
+    setProducts(productData);
+    setLoading(false);
   }, []);
 
-  let filtered = (products || []).filter((p: any) => {
+  let filtered = products.filter((p) => {
     const matchCat = category === 'All' || p.category === category;
     const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchSearch;
   });
 
-  filtered = filtered.sort((a: any, b: any) => {
+  filtered = filtered.sort((a, b) => {
     if (sort === 'price-asc') return a.price - b.price;
     if (sort === 'price-desc') return b.price - a.price;
     return b.rating - a.rating;
@@ -86,13 +89,13 @@ export function AgriMarket() {
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         {categories.map(c => (
           <button
-            key={c}
-            onClick={() => setCategory(c)}
+            key={c.id}
+            onClick={() => setCategory(c.id)}
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-              category === c ? 'bg-brand text-white border border-brand' : 'bg-canvas text-ink border border-line hover:border-ink-muted/50'
+              category === c.id ? 'bg-brand text-white border border-brand' : 'bg-canvas text-ink border border-line hover:border-ink-muted/50'
             }`}
           >
-            {c}
+            {c.label}
           </button>
         ))}
       </div>

@@ -75,6 +75,7 @@ export interface Listing {
   village: string;
   district: string;
   state: string;
+  farmerId: string;
   ownedByUser: boolean;
 }
 

@@ -18,6 +18,8 @@ vi.mock('../lib/supabase', () => ({
   isSupabaseConfigured: true
 }));
 
+const mockSupabase = supabase!;
+
 const wrapper = ({ children }: { children: React.ReactNode }) => (
   <AuthProvider>{children}</AuthProvider>
 );
@@ -28,7 +30,9 @@ describe('AuthContext', () => {
   });
 
   it('provides loading state initially', () => {
-    (supabase!.auth.getSession as any).mockResolvedValue(new Promise(() => {}));
+    (mockSupabase.auth.getSession as any).mockResolvedValue(new Promise(() => {
+      // intentionally never resolves to test loading state
+    }));
     
     const { result } = renderHook(() => useAuth(), { wrapper });
     
@@ -38,7 +42,7 @@ describe('AuthContext', () => {
 
   it('restores session successfully', async () => {
     const mockUser = { id: '123', phone: '+919876543210' };
-    (supabase!.auth.getSession as any).mockResolvedValue({ data: { session: { user: mockUser } } });
+    (mockSupabase.auth.getSession as any).mockResolvedValue({ data: { session: { user: mockUser } } });
     
     const { result } = renderHook(() => useAuth(), { wrapper });
     
@@ -58,8 +62,8 @@ describe('AuthContext', () => {
   });
 
   it('handles sign out', async () => {
-    (supabase!.auth.signOut as any).mockResolvedValue({ error: null });
-    (supabase!.auth.getSession as any).mockResolvedValue({ data: { session: null } });
+    (mockSupabase.auth.signOut as any).mockResolvedValue({ error: null });
+    (mockSupabase.auth.getSession as any).mockResolvedValue({ data: { session: null } });
     
     const { result } = renderHook(() => useAuth(), { wrapper });
     
@@ -67,7 +71,7 @@ describe('AuthContext', () => {
       await result.current.logout();
     });
 
-    expect(supabase!.auth.signOut).toHaveBeenCalled();
+    expect(mockSupabase.auth.signOut).toHaveBeenCalled();
     expect(result.current.user).toBeNull();
   });
 });

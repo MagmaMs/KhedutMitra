@@ -12,6 +12,8 @@ vi.mock('../lib/supabase', () => ({
   isSupabaseConfigured: true
 }));
 
+const mockSupabase = supabase!;
+
 vi.mock('../hooks/useAuth', () => ({
   useAuth: vi.fn()
 }));
@@ -51,7 +53,7 @@ describe('ListingsContext', () => {
 
     const mockOrder = vi.fn().mockResolvedValue({ data: mockData, error: null });
     const mockSelect = vi.fn().mockReturnValue({ order: mockOrder });
-    (supabase!.from as any).mockReturnValue({ select: mockSelect });
+    (mockSupabase.from as any).mockReturnValue({ select: mockSelect });
 
     const { result } = renderHook(() => useListings(), { wrapper });
 

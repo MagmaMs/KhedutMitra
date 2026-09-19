@@ -19,6 +19,7 @@ export const seedListings: Listing[] = [
   village: 'Vasad',
   district: 'Anand',
   state: 'Gujarat',
+  farmerId: 'usr-demo',
   ownedByUser: true
 },
 {
@@ -33,6 +34,7 @@ export const seedListings: Listing[] = [
   village: 'Vasad',
   district: 'Anand',
   state: 'Gujarat',
+  farmerId: 'usr-demo',
   ownedByUser: true
 },
 {
@@ -47,6 +49,7 @@ export const seedListings: Listing[] = [
   village: 'Vasad',
   district: 'Anand',
   state: 'Gujarat',
+  farmerId: 'usr-demo',
   ownedByUser: true
 },
 {
@@ -61,6 +64,7 @@ export const seedListings: Listing[] = [
   village: 'Vasad',
   district: 'Anand',
   state: 'Gujarat',
+  farmerId: 'usr-demo',
   ownedByUser: true
 },
 {
@@ -75,6 +79,7 @@ export const seedListings: Listing[] = [
   village: 'Kadi',
   district: 'Mehsana',
   state: 'Gujarat',
+  farmerId: 'usr-seed-2',
   ownedByUser: false
 },
 {
@@ -89,6 +94,7 @@ export const seedListings: Listing[] = [
   village: 'Unjha',
   district: 'Mehsana',
   state: 'Gujarat',
+  farmerId: 'usr-seed-3',
   ownedByUser: false
 },
 {
@@ -103,6 +109,7 @@ export const seedListings: Listing[] = [
   village: 'Deesa',
   district: 'Mehsana',
   state: 'Gujarat',
+  farmerId: 'usr-seed-4',
   ownedByUser: false
 },
 {
@@ -117,6 +124,7 @@ export const seedListings: Listing[] = [
   village: 'Padra',
   district: 'Vadodara',
   state: 'Gujarat',
+  farmerId: 'usr-seed-5',
   ownedByUser: false
 },
 {
@@ -131,6 +139,7 @@ export const seedListings: Listing[] = [
   village: 'Gondal',
   district: 'Rajkot',
   state: 'Gujarat',
+  farmerId: 'usr-seed-6',
   ownedByUser: false
 },
 {
@@ -145,5 +154,6 @@ export const seedListings: Listing[] = [
   village: 'Dewas',
   district: 'Indore',
   state: 'Madhya Pradesh',
+  farmerId: 'usr-seed-7',
   ownedByUser: false
 }];
