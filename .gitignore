@@ -35,3 +35,13 @@ build
 
 # Misc
 .vercel
+
+# Python / AI
+ai/.venv/
+ai/datasets/
+ai/models/*.keras
+ai/models/*.h5
+ai/models/*.tflite
+*.pyc
+__pycache__/
+.ipynb_checkpoints/

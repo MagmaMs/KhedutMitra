@@ -1,0 +1,57 @@
+{
+  "model_path": "models\\tomato_disease_finetuned.keras",
+  "test_loss": 0.2654,
+  "test_accuracy": 0.9134,
+  "per_class": {
+    "Healthy": {
+      "total": 335,
+      "correct": 335,
+      "accuracy": 1.0
+    },
+    "Leaf Mold": {
+      "total": 188,
+      "correct": 174,
+      "accuracy": 0.9255
+    },
+    "Target Spot": {
+      "total": 273,
+      "correct": 238,
+      "accuracy": 0.8718
+    },
+    "Late Blight": {
+      "total": 350,
+      "correct": 325,
+      "accuracy": 0.9286
+    },
+    "Early Blight": {
+      "total": 209,
+      "correct": 123,
+      "accuracy": 0.5885
+    },
+    "Bacterial Spot": {
+      "total": 441,
+      "correct": 414,
+      "accuracy": 0.9388
+    },
+    "Septoria Leaf Spot": {
+      "total": 355,
+      "correct": 331,
+      "accuracy": 0.9324
+    },
+    "Tomato Mosaic Virus": {
+      "total": 0,
+      "correct": 0,
+      "accuracy": null
+    },
+    "Tomato Yellow Leaf Curl Virus": {
+      "total": 1073,
+      "correct": 1056,
+      "accuracy": 0.9842
+    },
+    "Spider Mites": {
+      "total": 345,
+      "correct": 264,
+      "accuracy": 0.7652
+    }
+  }
+}

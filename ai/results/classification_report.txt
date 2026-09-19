@@ -1,0 +1,18 @@
+Model: models\tomato_disease_finetuned.keras
+Test Loss: 0.2654  |  Test Accuracy: 91.34%
+======================================================================
+                               precision    recall  f1-score   support
+
+                      Healthy       0.84      1.00      0.91       335
+                    Leaf Mold       0.92      0.93      0.92       188
+                  Target Spot       0.76      0.87      0.81       273
+                  Late Blight       0.93      0.93      0.93       350
+                 Early Blight       0.94      0.59      0.72       209
+               Bacterial Spot       0.89      0.94      0.91       441
+           Septoria Leaf Spot       0.86      0.93      0.90       355
+Tomato Yellow Leaf Curl Virus       1.00      0.98      0.99      1073
+                 Spider Mites       0.95      0.77      0.85       345
+
+                     accuracy                           0.91      3569
+                    macro avg       0.90      0.88      0.88      3569
+                 weighted avg       0.92      0.91      0.91      3569

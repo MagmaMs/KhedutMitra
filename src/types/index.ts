@@ -198,11 +198,15 @@ export interface AgriProduct {
 export interface DiseaseResult {
   diagnosis: string;
   confidence?: number;
-  severity?: 'low' | 'medium' | 'high';
+  severity?: 'low' | 'medium' | 'high' | 'unknown';
   explanation: string;
   recommendations: string[];
   prevention: string[];
   crop?: string;
+  class_id?: number;
+  disease_name?: string;
+  confidence_pct?: number;
+  top_predictions?: Array<{ class_id: number; disease: string; confidence: number }>;
 }
 
 /* ── Crop Advice ───────────────────────────────────────────── */
